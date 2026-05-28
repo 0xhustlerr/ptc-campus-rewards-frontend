@@ -1,0 +1,55 @@
+import { apiGet, apiPatch, apiPost } from "@/lib/api/client";
+import type {
+  AdminAdjustmentRequest,
+  AdminReversalRequest,
+  AuditLog,
+  EarningRule,
+  EarningRuleCreate,
+  EarningRuleUpdate,
+  LedgerTransaction,
+  RewardItem,
+  RewardItemCreate,
+  RewardItemUpdate,
+  StudentListItem,
+  WalletRecord,
+} from "@/lib/api/types";
+
+export async function getAdminStudents(): Promise<StudentListItem[]> {
+  return apiGet<StudentListItem[]>("/admin/students");
+}
+
+export async function getAdminWallets(): Promise<WalletRecord[]> {
+  return apiGet<WalletRecord[]>("/admin/wallets");
+}
+
+export async function getAdminTransactions(): Promise<LedgerTransaction[]> {
+  return apiGet<LedgerTransaction[]>("/admin/transactions");
+}
+
+export async function getAuditLogs(limit = 100): Promise<AuditLog[]> {
+  return apiGet<AuditLog[]>(`/admin/audit-logs?limit=${limit}`);
+}
+
+export async function createEarningRule(body: EarningRuleCreate): Promise<EarningRule> {
+  return apiPost<EarningRule>("/admin/earning-rules", body);
+}
+
+export async function updateEarningRule(id: string, body: EarningRuleUpdate): Promise<EarningRule> {
+  return apiPatch<EarningRule>(`/admin/earning-rules/${id}`, body);
+}
+
+export async function createRewardItem(body: RewardItemCreate): Promise<RewardItem> {
+  return apiPost<RewardItem>("/admin/reward-items", body);
+}
+
+export async function updateRewardItem(id: string, body: RewardItemUpdate): Promise<RewardItem> {
+  return apiPatch<RewardItem>(`/admin/reward-items/${id}`, body);
+}
+
+export async function postAdjustment(body: AdminAdjustmentRequest): Promise<LedgerTransaction> {
+  return apiPost<LedgerTransaction>("/admin/adjustments", body);
+}
+
+export async function postReversal(body: AdminReversalRequest): Promise<LedgerTransaction> {
+  return apiPost<LedgerTransaction>("/admin/reversals", body);
+}

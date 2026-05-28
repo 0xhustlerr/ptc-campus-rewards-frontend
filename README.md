@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PTC Campus Rewards Frontend (MVP Foundation)
 
-## Getting Started
+Mobile-first Next.js App Router frontend for a school rewards wallet. Uses typed mocks today; connects to FastAPI via `src/lib/api.ts`.
 
-First, run the development server:
+## Stack
+
+- Next.js App Router + TypeScript + Tailwind CSS
+- Shared UI primitives (`DataTable`, `StatCard`, `AsyncBoundary`, `FormField`, …)
+- Role routes: `/student`, `/staff`, `/vendor`, `/admin`
+
+## Run Locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## API layer (`src/lib/api.ts`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Import the API from a single module:
 
-## Learn More
+```ts
+import { api, apiFetch, isMockApi } from "@/lib/api";
+```
 
-To learn more about Next.js, take a look at the following resources:
+| Env variable | Purpose |
+|--------------|---------|
+| `NEXT_PUBLIC_API_BASE_URL` | FastAPI base URL (e.g. `http://localhost:8000`) |
+| `NEXT_PUBLIC_USE_MOCK_API=false` | Force HTTP even when base URL is unset |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+When no base URL is set, `api.*` uses the in-memory mock store (`src/lib/mock-store.ts`).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+`api-client.ts` re-exports `api` for backward compatibility — prefer `@/lib/api`.
 
-## Deploy on Vercel
+### Methods (stable for FastAPI swap)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `getStudents()`, `getWallets()`, `getTransactions()`
+- `getRewardRules()`, `getRewardItems()`, `getEarningRules()`, `getIssuedRewards()`
+- `issueReward(input)`, `redeemReward(input)`, `simulateWalletScan()`
+- `getVendorDailySummary()`, `getAdminRedemptions()`, `getAuditLogs()`, `getAdminReports()`
+- Student: `getStudentWallet()`, `getStudentProfile()`, `getStudentStats()`, `getStudentCatalog()`, `getStudentActivityTimeline()`, `getTransactionsByUserId()`
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+
+### Routes
+
+| Path | Role |
+|------|------|
+| `/student/wallet` | Main wallet |
+| `/student/transactions` | Activity |
+| `/student/rewards` | Catalog |
+| `/student/profile` | Profile |
+| `/staff/rewards` | Issue credits |
+| `/vendor/scanner` | Redeem at vendor |
+| `/admin/*` | Admin overview, students, rules, redemptions, reports, audit |
+
+### Shared components (`src/components/shared/`)
+
+- `DataTable` — responsive tables with empty states
+- `StatCard` / `StatGrid` — metric tiles
+- `PageHeader`, `AsyncBoundary`, `CategoryPills`, `KeyValueList`, `FormField`
+- `Card`, `Button`, `LoadingState`, `EmptyState`, `ErrorState`
+
+### Layout
+
+- `AppShell` — unified header + optional nav (used by student + ops routes)
+- `StudentWalletProvider` — single fetch shared across student pages
+
+### Hooks
+
+- `useAsyncQuery` — loading/error/refresh for admin/staff/vendor pages
+- `useStudentWallet` — student bundle (via context on `/student/*`)
+
+## Connect FastAPI
+
+1. Set `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000`
+2. Implement matching routes on the backend (see `httpApi` in `api.ts`)
+3. Add auth headers in `apiFetch` when OAuth is ready
