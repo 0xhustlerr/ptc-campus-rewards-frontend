@@ -13,15 +13,20 @@ export function formatCreditsShort(value: number): string {
 }
 
 export function formatDate(value: string): string {
+  if (!value || value === "—") return "—";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
   return new Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
-  }).format(new Date(value));
+  }).format(date);
 }
 
 export function formatRelativeDate(value: string): string {
+  if (!value || value === "—") return "—";
   const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "—";
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
