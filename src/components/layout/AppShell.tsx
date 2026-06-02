@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { NavLink } from "@/components/layout/NavLink";
 import { APP_NAME } from "@/lib/constants";
 
@@ -39,10 +40,13 @@ export function AppShell({
     <div className="min-h-screen bg-slate-50">
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className={`mx-auto flex w-full ${widthClass} flex-col gap-3 px-4 py-3 md:px-6`}>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">{APP_NAME}</p>
-            <h1 className="text-lg font-bold text-slate-900 sm:text-xl">{title}</h1>
-            {subtitle && <p className="text-sm text-slate-600">{subtitle}</p>}
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">{APP_NAME}</p>
+              <h1 className="text-lg font-bold text-slate-900 sm:text-xl">{title}</h1>
+              {subtitle && <p className="text-sm text-slate-600">{subtitle}</p>}
+            </div>
+            <SignOutButton />
           </div>
           {navItems && navItems.length > 0 && navVariant === "pill" && (
             <nav

@@ -3,6 +3,7 @@
 import { APP_NAME, ROLE_LABELS } from "@/lib/constants";
 import { User } from "@/lib/types";
 
+import { SignOutButton } from "@/components/auth/SignOutButton";
 import { RoleSwitcher } from "@/components/layout/RoleSwitcher";
 
 type TopHeaderProps = {
@@ -19,6 +20,7 @@ export function TopHeader({ user, onSwitchRole }: TopHeaderProps) {
           <h1 className="text-lg font-semibold text-slate-900">{ROLE_LABELS[user.role]} Dashboard</h1>
         </div>
         <div className="flex items-center gap-3">
+          <SignOutButton />
           <RoleSwitcher currentRole={user.role} onSwitchRole={onSwitchRole} />
           <div className="hidden text-right sm:block">
             <p className="text-sm font-semibold text-slate-900">{user.name}</p>
