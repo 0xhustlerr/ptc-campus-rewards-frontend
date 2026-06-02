@@ -32,6 +32,7 @@ export default function RegisterPage() {
   const [lastName, setLastName] = useState("");
   const [cohort, setCohort] = useState("");
   const [program, setProgram] = useState("");
+  const [department, setDepartment] = useState("");
   const [vendorName, setVendorName] = useState("");
   const [vendorType, setVendorType] = useState<VendorType>("food_truck");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -55,6 +56,14 @@ export default function RegisterPage() {
         program: program.trim() ? program.trim() : null,
       };
     }
+    if (role === "staff") {
+      return {
+        ...base,
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        department: department.trim() ? department.trim() : null,
+      };
+    }
     if (role === "vendor") {
       return {
         ...base,
@@ -73,6 +82,7 @@ export default function RegisterPage() {
     lastName,
     cohort,
     program,
+    department,
     vendorName,
     vendorType,
   ]);
@@ -159,6 +169,37 @@ export default function RegisterPage() {
                   value={program}
                   onChange={(e) => setProgram(e.target.value)}
                   placeholder="Barbering"
+                />
+              </FormField>
+            </>
+          )}
+
+          {role === "staff" && (
+            <>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField label="First name" htmlFor="staff_first_name">
+                  <Input
+                    id="staff_first_name"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </FormField>
+                <FormField label="Last name" htmlFor="staff_last_name">
+                  <Input
+                    id="staff_last_name"
+                    required
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </FormField>
+              </div>
+              <FormField label="Department (optional)" htmlFor="department">
+                <Input
+                  id="department"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  placeholder="Admissions"
                 />
               </FormField>
             </>

@@ -1,17 +1,17 @@
 import { ReactNode } from "react";
 
 import { RouteGuard } from "@/components/auth/RouteGuard";
-import { OpsShell } from "@/components/layout/OpsShell";
+import { StaffOpsShell } from "@/components/layout/StaffOpsShell";
 
 export default function StaffLayout({ children }: { children: ReactNode }) {
   return (
     <RouteGuard allowedRoles={["staff", "admin"]}>
-      <OpsShell
+      <StaffOpsShell
         title="Staff Rewards"
         subtitle="Issue PTC Credits to students using approved earning rules"
       >
         {children}
-      </OpsShell>
+      </StaffOpsShell>
     </RouteGuard>
   );
 }

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
 import { ErrorState } from "@/components/shared/FeedbackStates";
-import { QRScannerPlaceholder } from "@/components/vendor/QRScannerPlaceholder";
+import { VendorQRScanner } from "@/components/vendor/VendorQRScanner";
 import { RedemptionConfirmModal } from "@/components/vendor/RedemptionConfirmModal";
 import { RedemptionReceipt } from "@/components/vendor/RedemptionReceipt";
 import { ScannedWalletCard } from "@/components/vendor/ScannedWalletCard";
@@ -83,7 +83,14 @@ export default function VendorScannerPage() {
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <div className="space-y-4">
-        <QRScannerPlaceholder onScan={handleScan} isScanning={isScanning} />
+        <VendorQRScanner
+          onScan={handleScan}
+          isScanning={isScanning}
+          cameraPaused={Boolean(receipt) || canRedeem}
+          scanSucceeded={canRedeem && !receipt}
+          studentName={wallet?.studentName}
+          redemptionComplete={Boolean(receipt)}
+        />
         <VendorDailySummary summary={summary} />
       </div>
 

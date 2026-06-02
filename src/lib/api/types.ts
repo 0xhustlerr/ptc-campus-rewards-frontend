@@ -21,12 +21,19 @@ export type TokenResponse = {
   refresh_token: string;
 };
 
+export type StaffProfile = {
+  first_name: string;
+  last_name: string;
+  department: string | null;
+};
+
 export type User = {
   id: string;
   email: string;
   phone: string | null;
   role: UserRole;
   status: UserStatus;
+  staff_profile?: StaffProfile | null;
 };
 
 export type SelfRegisterRequest = {
@@ -41,6 +48,7 @@ export type SelfRegisterRequest = {
   program?: string | null;
   vendor_name?: string;
   vendor_type?: VendorType;
+  department?: string | null;
 };
 
 export type AdminUserStatusUpdate = {
@@ -50,6 +58,7 @@ export type AdminUserStatusUpdate = {
   last_name?: string;
   cohort?: string | null;
   program?: string | null;
+  department?: string | null;
   vendor_name?: string;
   vendor_type?: VendorType;
 };
@@ -60,6 +69,12 @@ export type PendingStudentProfile = {
   last_name: string;
   cohort: string | null;
   program: string | null;
+};
+
+export type PendingStaffProfile = {
+  first_name: string;
+  last_name: string;
+  department: string | null;
 };
 
 export type PendingVendorProfile = {
@@ -75,6 +90,7 @@ export type PendingRegistration = {
   status: UserStatus;
   created_at: string;
   student_profile: PendingStudentProfile | null;
+  staff_profile: PendingStaffProfile | null;
   vendor_profile: PendingVendorProfile | null;
 };
 

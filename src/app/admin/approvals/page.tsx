@@ -25,6 +25,12 @@ type StudentProfileDraft = {
   program: string;
 };
 
+type StaffProfileDraft = {
+  first_name: string;
+  last_name: string;
+  department: string;
+};
+
 type VendorProfileDraft = {
   vendor_name: string;
   vendor_type: VendorType;
@@ -42,6 +48,12 @@ const emptyStudentProfile = (): StudentProfileDraft => ({
   last_name: "",
   cohort: "",
   program: "",
+});
+
+const emptyStaffProfile = (): StaffProfileDraft => ({
+  first_name: "",
+  last_name: "",
+  department: "",
 });
 
 const emptyVendorProfile = (): VendorProfileDraft => ({
@@ -70,6 +82,12 @@ function registrationSummary(registration: PendingRegistration): string | null {
     if (!profile) return "Profile incomplete";
     return `${profile.first_name} ${profile.last_name} · ${profile.student_number}`;
   }
+  if (registration.role === "staff") {
+    const profile = registration.staff_profile;
+    if (!profile) return "Profile incomplete";
+    const name = `${profile.first_name} ${profile.last_name}`;
+    return profile.department ? `${name} · ${profile.department}` : name;
+  }
   if (registration.role === "vendor") {
     const profile = registration.vendor_profile;
     if (!profile) return "Profile incomplete";
@@ -80,6 +98,7 @@ function registrationSummary(registration: PendingRegistration): string | null {
 
 function hasCompleteProfile(registration: PendingRegistration): boolean {
   if (registration.role === "student") return Boolean(registration.student_profile);
+  if (registration.role === "staff") return Boolean(registration.staff_profile);
   if (registration.role === "vendor") return Boolean(registration.vendor_profile);
   return true;
 }
@@ -89,6 +108,7 @@ export default function AdminApprovalsPage() {
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [studentDrafts, setStudentDrafts] = useState<Record<string, StudentProfileDraft>>({});
+  const [staffDrafts, setStaffDrafts] = useState<Record<string, StaffProfileDraft>>({});
   const [vendorDrafts, setVendorDrafts] = useState<Record<string, VendorProfileDraft>>({});
   const { data, isLoading, error, refresh } = useAsyncQuery(() => getPendingRegistrations());
 
@@ -105,6 +125,20 @@ export default function AdminApprovalsPage() {
             last_name: profile.last_name,
             cohort: profile.cohort ?? "",
             program: profile.program ?? "",
+          };
+        }
+      }
+      return next;
+    });
+    setStaffDrafts((prev) => {
+      const next = { ...prev };
+      for (const registration of data) {
+        const profile = registration.staff_profile;
+        if (profile && !next[registration.id]) {
+          next[registration.id] = {
+            first_name: profile.first_name,
+            last_name: profile.last_name,
+            department: profile.department ?? "",
           };
         }
       }
@@ -128,6 +162,9 @@ export default function AdminApprovalsPage() {
   const getStudentDraft = (userId: string): StudentProfileDraft =>
     studentDrafts[userId] ?? emptyStudentProfile();
 
+  const getStaffDraft = (userId: string): StaffProfileDraft =>
+    staffDrafts[userId] ?? emptyStaffProfile();
+
   const getVendorDraft = (userId: string): VendorProfileDraft =>
     vendorDrafts[userId] ?? emptyVendorProfile();
 
@@ -139,6 +176,17 @@ export default function AdminApprovalsPage() {
     setStudentDrafts((prev) => ({
       ...prev,
       [userId]: { ...getStudentDraft(userId), [field]: value },
+    }));
+  };
+
+  const setStaffField = (
+    userId: string,
+    field: keyof StaffProfileDraft,
+    value: string,
+  ) => {
+    setStaffDrafts((prev) => ({
+      ...prev,
+      [userId]: { ...getStaffDraft(userId), [field]: value },
     }));
   };
 
@@ -173,6 +221,16 @@ export default function AdminApprovalsPage() {
         body.last_name = draft.last_name.trim();
         body.cohort = draft.cohort.trim() ? draft.cohort.trim() : null;
         body.program = draft.program.trim() ? draft.program.trim() : null;
+      }
+      if (
+        registration.role === "staff" &&
+        nextStatus === "active" &&
+        !registration.staff_profile
+      ) {
+        const draft = getStaffDraft(registration.id);
+        body.first_name = draft.first_name.trim();
+        body.last_name = draft.last_name.trim();
+        body.department = draft.department.trim() ? draft.department.trim() : null;
       }
       if (
         registration.role === "vendor" &&
@@ -225,8 +283,10 @@ export default function AdminApprovalsPage() {
               const summary = registrationSummary(registration);
               const profileComplete = hasCompleteProfile(registration);
               const studentProfile = registration.student_profile;
+              const staffProfile = registration.staff_profile;
               const vendorProfile = registration.vendor_profile;
               const studentDraft = getStudentDraft(registration.id);
+              const staffDraft = getStaffDraft(registration.id);
               const vendorDraft = getVendorDraft(registration.id);
 
               const detailItems = [
@@ -246,6 +306,15 @@ export default function AdminApprovalsPage() {
                       },
                       { label: "Cohort", value: studentProfile.cohort ?? "—" },
                       { label: "Program", value: studentProfile.program ?? "—" },
+                    ]
+                  : []),
+                ...(staffProfile
+                  ? [
+                      {
+                        label: "Name",
+                        value: `${staffProfile.first_name} ${staffProfile.last_name}`,
+                      },
+                      { label: "Department", value: staffProfile.department ?? "—" },
                     ]
                   : []),
                 ...(vendorProfile
@@ -359,6 +428,45 @@ export default function AdminApprovalsPage() {
                               value={studentDraft.program}
                               onChange={(e) =>
                                 setStudentField(registration.id, "program", e.target.value)
+                              }
+                            />
+                          </FormField>
+                        </div>
+                      )}
+
+                      {registration.role === "staff" && !staffProfile && (
+                        <div className="grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-2">
+                          <p className="text-xs text-slate-500 sm:col-span-2">
+                            Staff profile required before approval (not provided at sign-up)
+                          </p>
+                          <FormField label="First name" htmlFor={`sfn-${registration.id}`}>
+                            <Input
+                              id={`sfn-${registration.id}`}
+                              value={staffDraft.first_name}
+                              onChange={(e) =>
+                                setStaffField(registration.id, "first_name", e.target.value)
+                              }
+                            />
+                          </FormField>
+                          <FormField label="Last name" htmlFor={`sln-${registration.id}`}>
+                            <Input
+                              id={`sln-${registration.id}`}
+                              value={staffDraft.last_name}
+                              onChange={(e) =>
+                                setStaffField(registration.id, "last_name", e.target.value)
+                              }
+                            />
+                          </FormField>
+                          <FormField
+                            label="Department (optional)"
+                            htmlFor={`sdept-${registration.id}`}
+                            className="sm:col-span-2"
+                          >
+                            <Input
+                              id={`sdept-${registration.id}`}
+                              value={staffDraft.department}
+                              onChange={(e) =>
+                                setStaffField(registration.id, "department", e.target.value)
                               }
                             />
                           </FormField>

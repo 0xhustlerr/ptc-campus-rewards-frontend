@@ -53,14 +53,30 @@ function mapTransactionType(type: string): TransactionType {
   return "earn";
 }
 
-export function mapUser(user: { id: string; email: string; role: User["role"]; phone?: string | null }): User {
-  const localPart = user.email.split("@")[0] ?? "User";
+function displayNameFromEmail(email: string): string {
+  const localPart = email.split("@")[0] ?? "User";
+  return localPart.replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function mapUser(user: {
+  id: string;
+  email: string;
+  role: User["role"];
+  phone?: string | null;
+  staff_profile?: { first_name: string; last_name: string; department: string | null } | null;
+}): User {
+  const staffProfile = user.staff_profile;
+  const name = staffProfile
+    ? `${staffProfile.first_name} ${staffProfile.last_name}`.trim()
+    : displayNameFromEmail(user.email);
+
   return {
     id: user.id,
     email: user.email,
     role: user.role,
-    name: localPart.replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+    name,
     campus: "PTC Campus",
+    department: staffProfile?.department ?? undefined,
   };
 }
 

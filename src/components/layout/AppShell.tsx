@@ -10,9 +10,16 @@ import { APP_NAME } from "@/lib/constants";
 
 type NavItem = { label: string; href: string };
 
+export type AppShellActor = {
+  name: string;
+  email: string;
+  detail?: string;
+};
+
 type AppShellProps = {
   title: string;
   subtitle?: string;
+  actor?: AppShellActor;
   navItems?: readonly NavItem[];
   navVariant?: "pill" | "tab";
   maxWidth?: "student" | "ops";
@@ -24,9 +31,19 @@ function isNavActive(pathname: string, href: string): boolean {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+function actorInitials(name: string): string {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
 export function AppShell({
   title,
   subtitle,
+  actor,
   navItems,
   navVariant = "pill",
   maxWidth = "ops",
@@ -46,7 +63,26 @@ export function AppShell({
               <h1 className="text-lg font-bold text-slate-900 sm:text-xl">{title}</h1>
               {subtitle && <p className="text-sm text-slate-600">{subtitle}</p>}
             </div>
-            <SignOutButton />
+            <div className="flex shrink-0 items-center gap-3">
+              {actor && (
+                <div className="flex items-center gap-2.5">
+                  <div className="hidden text-right sm:block">
+                    <p className="text-sm font-semibold text-slate-900">{actor.name}</p>
+                    {actor.detail && (
+                      <p className="text-xs text-slate-600">{actor.detail}</p>
+                    )}
+                    <p className="text-xs text-slate-500">{actor.email}</p>
+                  </div>
+                  <div
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-sm font-semibold text-sky-700"
+                    aria-hidden
+                  >
+                    {actorInitials(actor.name)}
+                  </div>
+                </div>
+              )}
+              <SignOutButton />
+            </div>
           </div>
           {navItems && navItems.length > 0 && navVariant === "pill" && (
             <nav

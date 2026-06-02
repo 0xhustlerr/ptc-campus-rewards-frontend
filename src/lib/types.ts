@@ -6,6 +6,7 @@ export type User = {
   email: string;
   role: UserRole;
   campus: string;
+  department?: string;
   avatarUrl?: string;
 };
 
