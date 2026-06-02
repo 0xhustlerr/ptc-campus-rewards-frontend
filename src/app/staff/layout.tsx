@@ -5,7 +5,7 @@ import { StaffOpsShell } from "@/components/layout/StaffOpsShell";
 
 export default function StaffLayout({ children }: { children: ReactNode }) {
   return (
-    <RouteGuard allowedRoles={["staff", "admin"]}>
+    <RouteGuard allowedRoles={["staff"]}>
       <StaffOpsShell
         title="Staff Rewards"
         subtitle="Issue PTC Credits to students using approved earning rules"

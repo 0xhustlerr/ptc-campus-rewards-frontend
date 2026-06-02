@@ -5,7 +5,7 @@ import { OpsShell } from "@/components/layout/OpsShell";
 
 export default function VendorLayout({ children }: { children: ReactNode }) {
   return (
-    <RouteGuard allowedRoles={["vendor", "admin"]}>
+    <RouteGuard allowedRoles={["vendor"]}>
       <OpsShell
         title="Vendor Scanner"
         subtitle="Scan student QR codes and redeem PTC Credits for campus items"

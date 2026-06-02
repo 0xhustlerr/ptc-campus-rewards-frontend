@@ -10,10 +10,10 @@ export function canAccessRoute(role: UserRole, pathname: string): boolean {
     return role === "student";
   }
   if (pathname.startsWith("/staff") || pathname.includes("staff-rewards")) {
-    return role === "staff" || role === "admin";
+    return role === "staff";
   }
   if (pathname.startsWith("/vendor") || pathname.includes("vendor-scanner")) {
-    return role === "vendor" || role === "admin";
+    return role === "vendor";
   }
   if (pathname.startsWith("/admin") || pathname.includes("admin-dashboard")) {
     return role === "admin";
