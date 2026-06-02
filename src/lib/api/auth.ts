@@ -1,6 +1,6 @@
 import { apiGet, apiPost } from "@/lib/api/client";
 import { clearTokens, setTokens } from "@/lib/api/auth-storage";
-import type { TokenResponse, User } from "@/lib/api/types";
+import type { SelfRegisterRequest, TokenResponse, User } from "@/lib/api/types";
 
 export type LoginCredentials = {
   email: string;
@@ -42,4 +42,8 @@ export async function logout(): Promise<void> {
 
 export async function getCurrentUser(): Promise<User> {
   return apiGet<User>("/auth/me");
+}
+
+export async function register(body: SelfRegisterRequest): Promise<User> {
+  return apiPost<User>("/auth/register", body, { skipAuth: true });
 }

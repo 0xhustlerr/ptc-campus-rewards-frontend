@@ -7,7 +7,7 @@ import { mapRedemptionReceipt, mapRewardItem, mapVendorScan } from "@/lib/api/ma
 import { getScanFailureMessage, normalizeQrSessionToken } from "@/lib/api/qr-token";
 import { getRewardsCatalog } from "@/lib/api/rewards";
 import { redeemReward, scanQr } from "@/lib/api/vendor";
-import type { CatalogRewardItem, RedemptionReceipt, ScannedWallet } from "@/lib/types";
+import type { CatalogRewardItem, ScannedWallet } from "@/lib/types";
 
 export function useVendorScanner() {
   const [wallet, setWallet] = useState<ScannedWallet | null>(null);
@@ -59,7 +59,7 @@ export function useVendorScanner() {
         setIsScanning(false);
       }
     },
-    [loadCatalog],
+    [],
   );
 
   const redeem = useCallback(async (qrSessionToken: string, rewardItemId: string) => {

@@ -39,7 +39,7 @@ export function useQRCodeSession() {
   }, []);
 
   useEffect(() => {
-    loadSession();
+    void Promise.resolve().then(() => loadSession());
   }, [loadSession]);
 
   useEffect(() => {

@@ -94,6 +94,11 @@ function LoginForm() {
         </form>
 
         <p className="mt-4 text-center text-xs text-slate-500">
+          Need an account?{" "}
+          <Link href="/register" className="font-medium text-sky-700 hover:text-sky-800">
+            Register
+          </Link>
+          {" · "}
           <Link href="/" className="font-medium text-sky-700 hover:text-sky-800">
             Back to home
           </Link>

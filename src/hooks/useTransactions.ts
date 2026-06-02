@@ -28,13 +28,29 @@ export function useTransactions({ walletId, userId, page = 1, pageSize = 50 }: U
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (!walletId) {
-      setTransactions([]);
-      setIsLoading(false);
-      return;
+      void Promise.resolve().then(() => {
+        if (!cancelled) {
+          setTransactions([]);
+          setTotal(0);
+          setError(null);
+          setIsLoading(false);
+        }
+      });
+      return () => {
+        cancelled = true;
+      };
     }
 
-    let cancelled = false;
+    void Promise.resolve().then(() => {
+      if (!cancelled) {
+        setIsLoading(true);
+        setError(null);
+      }
+    });
+
     getWalletTransactions(walletId, page, pageSize)
       .then((result) => {
         if (!cancelled) {

@@ -1,7 +1,7 @@
 /** API response types aligned with FastAPI Pydantic schemas. */
 
 export type UserRole = "student" | "staff" | "vendor" | "admin";
-export type UserStatus = "active" | "inactive" | "suspended";
+export type UserStatus = "active" | "pending" | "inactive" | "suspended";
 export type WalletStatus = "active" | "frozen" | "closed";
 export type StudentStatus = "active" | "inactive" | "graduated" | "withdrawn";
 export type TransactionType = "earn" | "redeem" | "bonus" | "reversal" | "adjustment";
@@ -26,6 +26,13 @@ export type User = {
   phone: string | null;
   role: UserRole;
   status: UserStatus;
+};
+
+export type SelfRegisterRequest = {
+  email: string;
+  password: string;
+  role: Exclude<UserRole, "admin">;
+  phone?: string | null;
 };
 
 export type Student = {

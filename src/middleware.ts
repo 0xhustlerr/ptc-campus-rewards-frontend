@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 
 /** Must match SESSION_COOKIE in auth-storage.ts */
 const SESSION_COOKIE = "ptc-has-session";
-const PUBLIC_PATHS = ["/", "/login", "/unauthorized"];
+const PUBLIC_PATHS = ["/", "/login", "/register", "/unauthorized"];
 
 function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));

@@ -11,6 +11,8 @@ import type {
   RewardItemCreate,
   RewardItemUpdate,
   StudentListItem,
+  User,
+  UserStatus,
   WalletRecord,
 } from "@/lib/api/types";
 
@@ -52,4 +54,12 @@ export async function postAdjustment(body: AdminAdjustmentRequest): Promise<Ledg
 
 export async function postReversal(body: AdminReversalRequest): Promise<LedgerTransaction> {
   return apiPost<LedgerTransaction>("/admin/reversals", body);
+}
+
+export async function getPendingRegistrations(): Promise<User[]> {
+  return apiGet<User[]>("/admin/users/pending");
+}
+
+export async function updateUserStatus(userId: string, status: UserStatus): Promise<User> {
+  return apiPatch<User>(`/admin/users/${userId}/status`, { status });
 }

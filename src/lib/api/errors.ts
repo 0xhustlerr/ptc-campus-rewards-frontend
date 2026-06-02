@@ -22,6 +22,8 @@ const CODE_MESSAGES: Record<string, string> = {
   out_of_stock: "This reward item is out of stock.",
   redemption_in_progress: "This redemption is already being processed. Please wait.",
   unauthorized: "Your session has expired. Please sign in again.",
+  account_pending_approval:
+    "Your registration is pending admin approval. You can sign in after an administrator activates your account.",
 };
 
 const STATUS_MESSAGES: Record<number, string> = {

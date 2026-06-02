@@ -54,7 +54,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    loadUser().finally(() => setIsLoading(false));
+    let cancelled = false;
+    const timer = window.setTimeout(() => {
+      void loadUser().finally(() => {
+        if (!cancelled) {
+          setIsLoading(false);
+        }
+      });
+    }, 0);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
   }, [loadUser]);
 
   useEffect(() => {
@@ -109,5 +120,13 @@ export function useAuthContext(): AuthContextValue {
 }
 
 export function getLoginErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.body?.detail && error.body.detail !== "Internal server error") {
+      return error.body.detail;
+    }
+    if (error.code && error.code !== "unauthorized") {
+      return getUserFacingErrorMessage(error, "Unable to sign in. Check your email and password.");
+    }
+  }
   return getUserFacingErrorMessage(error, "Unable to sign in. Check your email and password.");
 }
