@@ -8,7 +8,13 @@ import { Button } from "@/components/shared/Button";
 import { FormField, Input, Select } from "@/components/shared/FormField";
 import { register } from "@/lib/api/auth";
 import { getUserFacingErrorMessage } from "@/lib/api/errors";
-import type { SelfRegisterRequest } from "@/lib/api/types";
+import type { SelfRegisterRequest, VendorType } from "@/lib/api/types";
+
+const VENDOR_TYPE_OPTIONS: Array<{ value: VendorType; label: string }> = [
+  { value: "food_truck", label: "Food truck" },
+  { value: "school_store", label: "School store" },
+  { value: "campus_perk", label: "Campus perk" },
+];
 
 const SELF_REGISTER_ROLES: Array<{ value: SelfRegisterRequest["role"]; label: string }> = [
   { value: "student", label: "Student" },
@@ -21,19 +27,55 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [role, setRole] = useState<SelfRegisterRequest["role"]>("student");
+  const [studentNumber, setStudentNumber] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [cohort, setCohort] = useState("");
+  const [program, setProgram] = useState("");
+  const [vendorName, setVendorName] = useState("");
+  const [vendorType, setVendorType] = useState<VendorType>("food_truck");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const payload = useMemo<SelfRegisterRequest>(
-    () => ({
+  const payload = useMemo<SelfRegisterRequest>(() => {
+    const base: SelfRegisterRequest = {
       email: email.trim(),
       password,
       role,
       phone: phone.trim() ? phone.trim() : null,
-    }),
-    [email, password, phone, role],
-  );
+    };
+    if (role === "student") {
+      return {
+        ...base,
+        student_number: studentNumber.trim(),
+        first_name: firstName.trim(),
+        last_name: lastName.trim(),
+        cohort: cohort.trim() ? cohort.trim() : null,
+        program: program.trim() ? program.trim() : null,
+      };
+    }
+    if (role === "vendor") {
+      return {
+        ...base,
+        vendor_name: vendorName.trim(),
+        vendor_type: vendorType,
+      };
+    }
+    return base;
+  }, [
+    email,
+    password,
+    phone,
+    role,
+    studentNumber,
+    firstName,
+    lastName,
+    cohort,
+    program,
+    vendorName,
+    vendorType,
+  ]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,6 +112,84 @@ export default function RegisterPage() {
               ))}
             </Select>
           </FormField>
+
+          {role === "student" && (
+            <>
+              <FormField label="Student number" htmlFor="student_number">
+                <Input
+                  id="student_number"
+                  required
+                  value={studentNumber}
+                  onChange={(e) => setStudentNumber(e.target.value)}
+                  placeholder="PTC-12345"
+                />
+              </FormField>
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField label="First name" htmlFor="first_name">
+                  <Input
+                    id="first_name"
+                    required
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
+                  />
+                </FormField>
+                <FormField label="Last name" htmlFor="last_name">
+                  <Input
+                    id="last_name"
+                    required
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                  />
+                </FormField>
+              </div>
+
+              <FormField label="Cohort (optional)" htmlFor="cohort">
+                <Input
+                  id="cohort"
+                  value={cohort}
+                  onChange={(e) => setCohort(e.target.value)}
+                  placeholder="Fall 2026"
+                />
+              </FormField>
+
+              <FormField label="Program (optional)" htmlFor="program">
+                <Input
+                  id="program"
+                  value={program}
+                  onChange={(e) => setProgram(e.target.value)}
+                  placeholder="Barbering"
+                />
+              </FormField>
+            </>
+          )}
+
+          {role === "vendor" && (
+            <>
+              <FormField label="Business name" htmlFor="vendor_name">
+                <Input
+                  id="vendor_name"
+                  required
+                  value={vendorName}
+                  onChange={(e) => setVendorName(e.target.value)}
+                  placeholder="Campus Food Truck"
+                />
+              </FormField>
+              <FormField label="Vendor type" htmlFor="vendor_type">
+                <Select
+                  id="vendor_type"
+                  value={vendorType}
+                  onChange={(e) => setVendorType(e.target.value as VendorType)}
+                >
+                  {VENDOR_TYPE_OPTIONS.map((item) => (
+                    <option key={item.value} value={item.value}>
+                      {item.label}
+                    </option>
+                  ))}
+                </Select>
+              </FormField>
+            </>
+          )}
 
           <FormField label="Email" htmlFor="email">
             <Input

@@ -6,6 +6,7 @@ export type WalletStatus = "active" | "frozen" | "closed";
 export type StudentStatus = "active" | "inactive" | "graduated" | "withdrawn";
 export type TransactionType = "earn" | "redeem" | "bonus" | "reversal" | "adjustment";
 export type RewardCategory = "food_truck" | "school_supplies" | "student_perks";
+export type VendorType = "food_truck" | "school_store" | "campus_perk";
 
 export type ApiErrorBody = {
   detail: string;
@@ -33,6 +34,48 @@ export type SelfRegisterRequest = {
   password: string;
   role: Exclude<UserRole, "admin">;
   phone?: string | null;
+  student_number?: string;
+  first_name?: string;
+  last_name?: string;
+  cohort?: string | null;
+  program?: string | null;
+  vendor_name?: string;
+  vendor_type?: VendorType;
+};
+
+export type AdminUserStatusUpdate = {
+  status: UserStatus;
+  student_number?: string;
+  first_name?: string;
+  last_name?: string;
+  cohort?: string | null;
+  program?: string | null;
+  vendor_name?: string;
+  vendor_type?: VendorType;
+};
+
+export type PendingStudentProfile = {
+  student_number: string;
+  first_name: string;
+  last_name: string;
+  cohort: string | null;
+  program: string | null;
+};
+
+export type PendingVendorProfile = {
+  name: string;
+  vendor_type: VendorType;
+};
+
+export type PendingRegistration = {
+  id: string;
+  email: string;
+  phone: string | null;
+  role: UserRole;
+  status: UserStatus;
+  created_at: string;
+  student_profile: PendingStudentProfile | null;
+  vendor_profile: PendingVendorProfile | null;
 };
 
 export type Student = {

@@ -5,19 +5,14 @@ import { RewardRulesTable } from "@/components/admin/RewardRulesTable";
 import { AsyncBoundary } from "@/components/shared/AsyncBoundary";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { useAsyncQuery } from "@/hooks/useAsyncQuery";
-import { mapRewardItem, mapRewardRule } from "@/lib/api/mappers";
-import { getEarningRulesList } from "@/lib/api/staff";
-import { getRewardsCatalog } from "@/lib/api/rewards";
-import { CatalogRewardItem, RewardRule } from "@/lib/types";
+import { getAdminEarningRules, getAdminRewardItems } from "@/lib/api/admin";
+import type { EarningRule, RewardItem } from "@/lib/api/types";
 
-type RewardsData = { rules: RewardRule[]; items: CatalogRewardItem[] };
+type RewardsData = { rules: EarningRule[]; items: RewardItem[] };
 
 async function loadRewards(): Promise<RewardsData> {
-  const [rules, items] = await Promise.all([getEarningRulesList(), getRewardsCatalog()]);
-  return {
-    rules: rules.map(mapRewardRule),
-    items: items.map(mapRewardItem),
-  };
+  const [rules, items] = await Promise.all([getAdminEarningRules(), getAdminRewardItems()]);
+  return { rules, items };
 }
 
 export default function AdminRewardsPage() {
@@ -38,8 +33,8 @@ export default function AdminRewardsPage() {
       >
         {data && (
           <div className="space-y-6">
-            <RewardRulesTable rules={data.rules} />
-            <RewardCatalogTable items={data.items} />
+            <RewardRulesTable rules={data.rules} onMutated={refresh} />
+            <RewardCatalogTable items={data.items} onMutated={refresh} />
           </div>
         )}
       </AsyncBoundary>

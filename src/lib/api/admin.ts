@@ -11,8 +11,9 @@ import type {
   RewardItemCreate,
   RewardItemUpdate,
   StudentListItem,
+  AdminUserStatusUpdate,
+  PendingRegistration,
   User,
-  UserStatus,
   WalletRecord,
 } from "@/lib/api/types";
 
@@ -30,6 +31,14 @@ export async function getAdminTransactions(): Promise<LedgerTransaction[]> {
 
 export async function getAuditLogs(limit = 100): Promise<AuditLog[]> {
   return apiGet<AuditLog[]>(`/admin/audit-logs?limit=${limit}`);
+}
+
+export async function getAdminEarningRules(): Promise<EarningRule[]> {
+  return apiGet<EarningRule[]>("/admin/earning-rules");
+}
+
+export async function getAdminRewardItems(): Promise<RewardItem[]> {
+  return apiGet<RewardItem[]>("/admin/reward-items");
 }
 
 export async function createEarningRule(body: EarningRuleCreate): Promise<EarningRule> {
@@ -56,10 +65,13 @@ export async function postReversal(body: AdminReversalRequest): Promise<LedgerTr
   return apiPost<LedgerTransaction>("/admin/reversals", body);
 }
 
-export async function getPendingRegistrations(): Promise<User[]> {
-  return apiGet<User[]>("/admin/users/pending");
+export async function getPendingRegistrations(): Promise<PendingRegistration[]> {
+  return apiGet<PendingRegistration[]>("/admin/users/pending");
 }
 
-export async function updateUserStatus(userId: string, status: UserStatus): Promise<User> {
-  return apiPatch<User>(`/admin/users/${userId}/status`, { status });
+export async function updateUserStatus(
+  userId: string,
+  body: AdminUserStatusUpdate,
+): Promise<User> {
+  return apiPatch<User>(`/admin/users/${userId}/status`, body);
 }
