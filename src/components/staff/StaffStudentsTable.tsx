@@ -10,8 +10,18 @@ type StaffStudentsTableProps = {
 
 export function StaffStudentsTable({ students, selectedId, onSelect }: StaffStudentsTableProps) {
   const columns: ColumnDef<StaffStudent>[] = [
-    { id: "name", header: "Name", cell: (s) => <span className="font-medium">{s.name}</span> },
-    { id: "cohort", header: "Cohort", cell: (s) => s.cohort },
+    {
+      id: "name",
+      header: "Name",
+      cellClassName: "min-w-0 max-w-[160px] break-words",
+      cell: (s) => <span className="font-medium">{s.name}</span>,
+    },
+    {
+      id: "cohort",
+      header: "Cohort",
+      cellClassName: "min-w-0 max-w-[120px] break-words",
+      cell: (s) => s.cohort,
+    },
     {
       id: "balance",
       header: "Balance",
@@ -44,7 +54,7 @@ export function StaffStudentsTable({ students, selectedId, onSelect }: StaffStud
       getRowKey={(s) => s.id}
       emptyTitle="No students"
       emptyMessage="No student records found."
-      minWidth={520}
+      minWidth={0}
     />
   );
 }

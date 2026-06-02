@@ -32,7 +32,7 @@ export function IssuedRewardsTable({ rewards }: IssuedRewardsTableProps) {
       getRowKey={(r) => r.id}
       emptyTitle="No rewards issued yet"
       emptyMessage="Issued PTC Credits will appear here after you submit."
-      minWidth={520}
+      minWidth={0}
     />
   );
 }

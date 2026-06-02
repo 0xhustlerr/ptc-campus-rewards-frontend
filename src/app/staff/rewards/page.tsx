@@ -72,7 +72,7 @@ export default function StaffRewardsPage() {
       errorTitle="Staff dashboard unavailable"
     >
       <div className="grid gap-6 lg:grid-cols-[1fr_300px] xl:grid-cols-[1fr_340px]">
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           <StaffStudentsTable
             students={students}
             selectedId={selected?.id}
@@ -104,7 +104,7 @@ export default function StaffRewardsPage() {
           <IssuedRewardsTable rewards={recentIssued} />
         </div>
 
-        <aside>
+        <aside className="min-w-0">
           <StudentSelectCard student={selected} />
         </aside>
       </div>
