@@ -12,12 +12,13 @@ type FormFieldProps = {
   htmlFor?: string;
   hint?: string;
   error?: string;
+  className?: string;
   children: ReactNode;
 };
 
-export function FormField({ label, htmlFor, hint, error, children }: FormFieldProps) {
+export function FormField({ label, htmlFor, hint, error, className = "", children }: FormFieldProps) {
   return (
-    <label className="block" htmlFor={htmlFor}>
+    <label className={`block ${className}`.trim()} htmlFor={htmlFor}>
       <span className={labelClassName}>{label}</span>
       <div className="mt-1">{children}</div>
       {hint && !error && <p className="mt-1 text-xs text-slate-500">{hint}</p>}

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
 import { AuthProvider } from "@/contexts/AuthContext";
+import favicon from "./favicon.png";
 import "./globals.css";
 
 const inter = Inter({
@@ -11,7 +12,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "PTC Campus Rewards",
-  description: "Campus rewards wallet for students, staff, vendors, and admins.",
+  description: "Campus rewards program for students, staff, vendors, and admins.",
+  icons: {
+    icon: [{ url: favicon.src, type: "image/png", sizes: `${favicon.width}x${favicon.height}` }],
+  },
 };
 
 export default function RootLayout({
