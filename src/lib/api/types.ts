@@ -27,13 +27,28 @@ export type StaffProfile = {
   department: string | null;
 };
 
+export type StudentProfile = {
+  student_number: string;
+  first_name: string;
+  last_name: string;
+  cohort: string | null;
+  program: string | null;
+};
+
+export type VendorProfile = {
+  name: string;
+  vendor_type: VendorType;
+};
+
 export type User = {
   id: string;
   email: string;
   phone: string | null;
   role: UserRole;
   status: UserStatus;
+  student_profile?: StudentProfile | null;
   staff_profile?: StaffProfile | null;
+  vendor_profile?: VendorProfile | null;
 };
 
 export type SelfRegisterRequest = {

@@ -8,10 +8,11 @@ import { useAuth } from "@/hooks/useAuth";
 type StaffOpsShellProps = {
   title: string;
   subtitle?: string;
+  navItems?: readonly { label: string; href: string }[];
   children: ReactNode;
 };
 
-export function StaffOpsShell({ title, subtitle, children }: StaffOpsShellProps) {
+export function StaffOpsShell({ title, subtitle, navItems, children }: StaffOpsShellProps) {
   const { currentUser } = useAuth();
 
   const actor = currentUser
@@ -23,7 +24,7 @@ export function StaffOpsShell({ title, subtitle, children }: StaffOpsShellProps)
     : undefined;
 
   return (
-    <OpsShell title={title} subtitle={subtitle} actor={actor}>
+    <OpsShell title={title} subtitle={subtitle} actor={actor} navItems={navItems}>
       {children}
     </OpsShell>
   );

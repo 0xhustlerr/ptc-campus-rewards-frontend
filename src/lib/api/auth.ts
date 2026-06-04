@@ -44,6 +44,13 @@ export async function getCurrentUser(): Promise<User> {
   return apiGet<User>("/auth/me");
 }
 
+export async function changePassword(body: {
+  current_password: string;
+  new_password: string;
+}): Promise<void> {
+  await apiPost("/auth/change-password", body);
+}
+
 export async function register(body: SelfRegisterRequest): Promise<User> {
   return apiPost<User>("/auth/register", body, { skipAuth: true });
 }

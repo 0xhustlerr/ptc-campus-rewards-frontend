@@ -58,17 +58,35 @@ function displayNameFromEmail(email: string): string {
   return localPart.replace(/[._]/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+function displayNameFromProfiles(user: {
+  email: string;
+  staff_profile?: { first_name: string; last_name: string } | null;
+  student_profile?: { first_name: string; last_name: string } | null;
+  vendor_profile?: { name: string } | null;
+}): string {
+  if (user.staff_profile) {
+    return `${user.staff_profile.first_name} ${user.staff_profile.last_name}`.trim();
+  }
+  if (user.student_profile) {
+    return `${user.student_profile.first_name} ${user.student_profile.last_name}`.trim();
+  }
+  if (user.vendor_profile?.name) {
+    return user.vendor_profile.name;
+  }
+  return displayNameFromEmail(user.email);
+}
+
 export function mapUser(user: {
   id: string;
   email: string;
   role: User["role"];
   phone?: string | null;
   staff_profile?: { first_name: string; last_name: string; department: string | null } | null;
+  student_profile?: { first_name: string; last_name: string } | null;
+  vendor_profile?: { name: string } | null;
 }): User {
   const staffProfile = user.staff_profile;
-  const name = staffProfile
-    ? `${staffProfile.first_name} ${staffProfile.last_name}`.trim()
-    : displayNameFromEmail(user.email);
+  const name = displayNameFromProfiles(user);
 
   return {
     id: user.id,

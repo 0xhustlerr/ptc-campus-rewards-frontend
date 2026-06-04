@@ -1,5 +1,7 @@
 "use client";
 
+import { AccountProfileCard } from "@/components/profile/AccountProfileCard";
+import { ChangePasswordForm } from "@/components/profile/ChangePasswordForm";
 import { Card } from "@/components/shared/Card";
 import { AsyncBoundary } from "@/components/shared/AsyncBoundary";
 import { KeyValueList } from "@/components/shared/KeyValueList";
@@ -7,10 +9,13 @@ import { PageHeader } from "@/components/shared/PageHeader";
 import { EarnInfoCard } from "@/components/wallet/EarnInfoCard";
 import { StudentStatsGrid } from "@/components/wallet/StudentStatsGrid";
 import { useStudentWalletContext } from "@/contexts/StudentWalletContext";
+import { useAsyncQuery } from "@/hooks/useAsyncQuery";
+import { getCurrentUser } from "@/lib/api/auth";
 import { formatWalletStatus } from "@/lib/formatters";
 
 export default function StudentProfilePage() {
   const { data, isLoading, error, refresh } = useStudentWalletContext();
+  const accountQuery = useAsyncQuery(() => getCurrentUser());
 
   return (
     <>
@@ -24,22 +29,6 @@ export default function StudentProfilePage() {
       >
         {data && (
           <div className="space-y-4">
-            <Card>
-              <div className="flex items-center gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-sky-100 text-lg font-bold text-sky-800">
-                  {data.profile.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .join("")
-                    .slice(0, 2)}
-                </div>
-                <div>
-                  <h2 className="text-lg font-bold text-slate-900">{data.profile.name}</h2>
-                  <p className="text-sm text-slate-600">{data.profile.email}</p>
-                </div>
-              </div>
-            </Card>
-
             <Card title="Program details">
               <KeyValueList
                 items={[
@@ -58,6 +47,17 @@ export default function StudentProfilePage() {
 
             <StudentStatsGrid stats={data.stats} />
             <EarnInfoCard />
+
+            <AsyncBoundary
+              isLoading={accountQuery.isLoading}
+              error={accountQuery.error}
+              onRetry={accountQuery.refresh}
+              loadingMessage="Loading account…"
+              errorTitle="Unable to load account"
+            >
+              {accountQuery.data && <AccountProfileCard user={accountQuery.data} />}
+            </AsyncBoundary>
+            <ChangePasswordForm />
           </div>
         )}
       </AsyncBoundary>

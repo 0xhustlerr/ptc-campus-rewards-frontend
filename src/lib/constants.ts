@@ -26,6 +26,16 @@ export const ROLE_NAV_ITEMS: Record<
   admin: [{ label: "Dashboard", href: "/admin" }],
 };
 
+export const STAFF_NAV_ITEMS = [
+  { label: "Rewards", href: "/staff/rewards" },
+  { label: "Profile", href: "/staff/profile" },
+] as const;
+
+export const VENDOR_NAV_ITEMS = [
+  { label: "Scanner", href: "/vendor/scanner" },
+  { label: "Profile", href: "/vendor/profile" },
+] as const;
+
 export const STUDENT_NAV_ITEMS = [
   { label: "Wallet", href: "/student/wallet" },
   { label: "Activity", href: "/student/transactions" },
@@ -42,6 +52,7 @@ export const ADMIN_NAV_ITEMS = [
   { label: "Redemptions", href: "/admin/redemptions" },
   { label: "Reports", href: "/admin/reports" },
   { label: "Audit", href: "/admin/audit-logs" },
+  { label: "Profile", href: "/admin/profile" },
 ] as const;
 
 export const CATALOG_CATEGORY_LABELS: Record<CatalogCategory, string> = {
