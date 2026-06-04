@@ -7,12 +7,13 @@ type OpsShellProps = {
   subtitle?: string;
   actor?: AppShellActor;
   navItems?: readonly { label: string; href: string }[];
+  maxWidth?: "student" | "ops";
   children: ReactNode;
 };
 
-export function OpsShell({ title, subtitle, actor, navItems, children }: OpsShellProps) {
+export function OpsShell({ title, subtitle, actor, navItems, maxWidth = "ops", children }: OpsShellProps) {
   return (
-    <AppShell title={title} subtitle={subtitle} actor={actor} navItems={navItems} maxWidth="ops">
+    <AppShell title={title} subtitle={subtitle} actor={actor} navItems={navItems} maxWidth={maxWidth}>
       {children}
     </AppShell>
   );

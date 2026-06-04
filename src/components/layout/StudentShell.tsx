@@ -9,12 +9,7 @@ type StudentShellProps = {
 
 export function StudentShell({ children }: StudentShellProps) {
   return (
-    <AppShell
-      title="Student Wallet"
-      navItems={STUDENT_NAV_ITEMS}
-      navVariant="tab"
-      maxWidth="student"
-    >
+    <AppShell title="Student Wallet" navItems={STUDENT_NAV_ITEMS} maxWidth="student">
       {children}
     </AppShell>
   );

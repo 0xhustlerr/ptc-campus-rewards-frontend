@@ -21,7 +21,6 @@ type AppShellProps = {
   subtitle?: string;
   actor?: AppShellActor;
   navItems?: readonly NavItem[];
-  navVariant?: "pill" | "tab";
   maxWidth?: "student" | "ops";
   children: ReactNode;
 };
@@ -45,13 +44,12 @@ export function AppShell({
   subtitle,
   actor,
   navItems,
-  navVariant = "pill",
   maxWidth = "ops",
   children,
 }: AppShellProps) {
   const pathname = usePathname();
   const widthClass = maxWidth === "student" ? "max-w-lg md:max-w-2xl" : "max-w-6xl";
-  const isTabNav = navVariant === "tab";
+  const hasNav = Boolean(navItems && navItems.length > 0);
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -84,12 +82,12 @@ export function AppShell({
               <SignOutButton />
             </div>
           </div>
-          {navItems && navItems.length > 0 && navVariant === "pill" && (
+          {hasNav && (
             <nav
-              className="flex gap-2 overflow-x-auto pb-1"
+              className="max-md:hidden flex gap-2 overflow-x-auto border-t border-slate-100 pt-3"
               aria-label="Section navigation"
             >
-              {navItems.map((item) => (
+              {navItems!.map((item) => (
                 <NavLink
                   key={item.href}
                   href={item.href}
@@ -104,25 +102,25 @@ export function AppShell({
       </header>
 
       <main
-        className={`mx-auto w-full ${widthClass} px-4 py-4 ${
-          isTabNav ? "pb-24 md:pb-6" : "pb-6"
-        } md:px-6`}
+        className={`mx-auto w-full ${widthClass} px-4 py-4 md:px-6 ${
+          hasNav ? "pb-24 md:pb-6" : "pb-6"
+        }`}
       >
         {children}
       </main>
 
-      {navItems && navItems.length > 0 && isTabNav && (
+      {hasNav && (
         <nav
           className="fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200 bg-white md:hidden"
           aria-label="Primary navigation"
         >
           <ul className={`mx-auto flex ${widthClass} items-stretch justify-around`}>
-            {navItems.map((item) => (
+            {navItems!.map((item) => (
               <li key={item.href} className="flex-1">
                 <NavLink
                   href={item.href}
                   label={item.label}
-                  isActive={pathname === item.href}
+                  isActive={isNavActive(pathname, item.href)}
                   variant="tab"
                 />
               </li>
