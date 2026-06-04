@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, Suspense, useEffect, useState } from "react";
 
 import { AlertBanner } from "@/components/shared/AlertBanner";
@@ -9,10 +9,9 @@ import { Button } from "@/components/shared/Button";
 import { LoadingState } from "@/components/shared/FeedbackStates";
 import { FormField, Input } from "@/components/shared/FormField";
 import { getLoginErrorMessage, useAuth } from "@/hooks/useAuth";
-import { getSafeRedirectPath } from "@/lib/role-helpers";
+import { getSafeRedirectPath, navigateAfterAuth } from "@/lib/role-helpers";
 
 function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next");
   const { login, isLoading: authLoading, isAuthenticated, role } = useAuth();
@@ -23,20 +22,19 @@ function LoginForm() {
 
   useEffect(() => {
     if (!authLoading && isAuthenticated && role) {
-      router.replace(getSafeRedirectPath(role, next));
+      navigateAfterAuth(getSafeRedirectPath(role, next));
     }
-  }, [authLoading, isAuthenticated, role, next, router]);
+  }, [authLoading, isAuthenticated, role, next]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
     setIsSubmitting(true);
     try {
-      const userRole = await login(email.trim(), password);
-      router.replace(getSafeRedirectPath(userRole, next));
+      await login(email.trim(), password);
+      // Redirect runs in useEffect after auth state commits (avoids RouteGuard race).
     } catch (err) {
       setError(getLoginErrorMessage(err));
-    } finally {
       setIsSubmitting(false);
     }
   };

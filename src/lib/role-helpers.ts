@@ -35,6 +35,14 @@ export function getSafeRedirectPath(role: UserRole, next: string | null | undefi
   return ROLE_DASHBOARD_PATHS[role];
 }
 
+/**
+ * Full-page redirect after sign-in so middleware sees the session cookie and
+ * protected layouts load the user from storage before RouteGuard runs.
+ */
+export function navigateAfterAuth(path: string): void {
+  window.location.replace(path);
+}
+
 export function isRole(user: User, role: UserRole): boolean {
   return user.role === role;
 }

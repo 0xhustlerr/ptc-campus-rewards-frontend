@@ -28,7 +28,8 @@ export function setTokens(accessToken: string, refreshToken: string, expiresInSe
   window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
   window.localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
   window.localStorage.setItem(ACCESS_EXPIRES_KEY, String(expiresAt));
-  document.cookie = `${SESSION_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 14}; SameSite=Lax`;
+  const secure = window.location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${SESSION_COOKIE}=1; path=/; max-age=${60 * 60 * 24 * 14}; SameSite=Lax${secure}`;
 }
 
 export function clearTokens(): void {
