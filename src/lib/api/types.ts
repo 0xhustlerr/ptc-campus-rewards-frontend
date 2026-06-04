@@ -63,6 +63,21 @@ export type AdminUserStatusUpdate = {
   vendor_type?: VendorType;
 };
 
+export type CreateAdminRequest = {
+  email: string;
+  password: string;
+  phone?: string | null;
+};
+
+export type AdminAccount = {
+  id: string;
+  email: string;
+  phone: string | null;
+  role: "admin";
+  status: UserStatus;
+  created_at: string;
+};
+
 export type PendingStudentProfile = {
   student_number: string;
   first_name: string;

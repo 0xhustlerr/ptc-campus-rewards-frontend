@@ -1,8 +1,10 @@
 import { apiGet, apiPatch, apiPost } from "@/lib/api/client";
 import type {
+  AdminAccount,
   AdminAdjustmentRequest,
   AdminReversalRequest,
   AuditLog,
+  CreateAdminRequest,
   EarningRule,
   EarningRuleCreate,
   EarningRuleUpdate,
@@ -67,6 +69,14 @@ export async function postReversal(body: AdminReversalRequest): Promise<LedgerTr
 
 export async function getPendingRegistrations(): Promise<PendingRegistration[]> {
   return apiGet<PendingRegistration[]>("/admin/users/pending");
+}
+
+export async function getAdminAccounts(): Promise<AdminAccount[]> {
+  return apiGet<AdminAccount[]>("/admin/admins");
+}
+
+export async function createAdminAccount(body: CreateAdminRequest): Promise<AdminAccount> {
+  return apiPost<AdminAccount>("/admin/admins", body);
 }
 
 export async function updateUserStatus(

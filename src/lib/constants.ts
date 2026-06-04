@@ -36,6 +36,7 @@ export const STUDENT_NAV_ITEMS = [
 export const ADMIN_NAV_ITEMS = [
   { label: "Overview", href: "/admin" },
   { label: "Approvals", href: "/admin/approvals" },
+  { label: "Administrators", href: "/admin/admins" },
   { label: "Students", href: "/admin/students" },
   { label: "Rewards", href: "/admin/rewards" },
   { label: "Redemptions", href: "/admin/redemptions" },
