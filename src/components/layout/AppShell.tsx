@@ -114,9 +114,9 @@ export function AppShell({
           className="fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200 bg-white md:hidden"
           aria-label="Primary navigation"
         >
-          <ul className={`mx-auto flex ${widthClass} items-stretch justify-around`}>
+          <ul className="flex items-stretch overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {navItems!.map((item) => (
-              <li key={item.href} className="flex-1">
+              <li key={item.href} className="shrink-0">
                 <NavLink
                   href={item.href}
                   label={item.label}

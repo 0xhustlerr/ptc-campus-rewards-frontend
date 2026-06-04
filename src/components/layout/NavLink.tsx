@@ -16,7 +16,7 @@ export function NavLink({ href, label, isActive, variant = "pill" }: NavLinkProp
     return (
       <Link
         href={href}
-        className={`flex flex-1 flex-col items-center justify-center px-2 py-3 text-xs font-semibold ${
+        className={`flex shrink-0 flex-col items-center justify-center whitespace-nowrap px-3 py-3 text-xs font-semibold ${
           isActive ? "text-sky-700" : "text-slate-500"
         }`}
       >
