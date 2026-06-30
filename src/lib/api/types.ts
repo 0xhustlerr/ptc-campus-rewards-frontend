@@ -148,6 +148,7 @@ export type StudentListItem = {
   cohort: string | null;
   program: string | null;
   status: StudentStatus;
+  email: string | null;
   wallet_id: string | null;
   balance: string | null;
 };

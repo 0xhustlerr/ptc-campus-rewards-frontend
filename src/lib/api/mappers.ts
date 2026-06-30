@@ -103,7 +103,7 @@ export function mapStudentListItem(student: StudentListItem): StaffStudent {
   return {
     id: student.id,
     name,
-    email: `${student.student_number}@ptc.edu`,
+    email: student.email ?? `${student.student_number}@ptc.edu`,
     cohort: student.cohort ?? "—",
     walletId: student.wallet_id ?? "",
     balance: toNumber(student.balance),
