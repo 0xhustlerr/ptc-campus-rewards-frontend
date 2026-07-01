@@ -52,13 +52,16 @@ export function AppShell({
   const hasNav = Boolean(navItems && navItems.length > 0);
 
   return (
-    <div className="min-h-screen bg-slate-50">
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div className="min-h-screen bg-app-gradient">
+      <header className="sticky top-0 z-20 border-b border-slate-200/70 glass">
         <div className={`mx-auto flex w-full ${widthClass} flex-col gap-3 px-4 py-3 md:px-6`}>
           <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-sky-700">{APP_NAME}</p>
-              <h1 className="text-lg font-bold text-slate-900 sm:text-xl">{title}</h1>
+            <div className="min-w-0">
+              <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-sky-700">
+                <span className="inline-block h-2 w-2 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500" aria-hidden />
+                {APP_NAME}
+              </p>
+              <h1 className="truncate text-lg font-bold tracking-tight text-slate-900 sm:text-xl">{title}</h1>
               {subtitle && <p className="text-sm text-slate-600">{subtitle}</p>}
             </div>
             <div className="flex shrink-0 items-center gap-3">
@@ -72,7 +75,7 @@ export function AppShell({
                     <p className="text-xs text-slate-500">{actor.email}</p>
                   </div>
                   <div
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-100 text-sm font-semibold text-sky-700"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 text-sm font-semibold text-white shadow-brand ring-2 ring-white"
                     aria-hidden
                   >
                     {actorInitials(actor.name)}
@@ -84,7 +87,7 @@ export function AppShell({
           </div>
           {hasNav && (
             <nav
-              className="max-md:hidden flex gap-2 overflow-x-auto border-t border-slate-100 pt-3"
+              className="max-md:hidden flex gap-1.5 overflow-x-auto border-t border-slate-100 pt-3"
               aria-label="Section navigation"
             >
               {navItems!.map((item) => (
@@ -111,7 +114,7 @@ export function AppShell({
 
       {hasNav && (
         <nav
-          className="fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200 bg-white md:hidden"
+          className="fixed bottom-0 left-0 right-0 z-30 border-t border-slate-200/70 glass pb-[env(safe-area-inset-bottom)] md:hidden"
           aria-label="Primary navigation"
         >
           <ul className="flex items-stretch overflow-x-auto overscroll-x-contain [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

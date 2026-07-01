@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { RewardItemFormModal } from "@/components/admin/RewardItemFormModal";
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
 import { EmptyState } from "@/components/shared/FeedbackStates";
+import { Pagination } from "@/components/shared/Pagination";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+
+const PAGE_SIZE = 7;
 import {
   createRewardItem,
   updateRewardItem,
@@ -27,6 +30,13 @@ export function RewardCatalogTable({ items, onMutated }: RewardCatalogTableProps
   const [editingItem, setEditingItem] = useState<RewardItem | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+
+  const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+  useEffect(() => {
+    setPage((current) => Math.min(current, pageCount));
+  }, [pageCount]);
+  const pagedItems = items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const openCreate = () => {
     setActionError(null);
@@ -103,7 +113,7 @@ export function RewardCatalogTable({ items, onMutated }: RewardCatalogTableProps
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {items.map((item) => {
+                {pagedItems.map((item) => {
                   const busy = busyId === item.id;
                   const category = item.category as CatalogCategory;
                   const inventoryLabel =
@@ -153,6 +163,13 @@ export function RewardCatalogTable({ items, onMutated }: RewardCatalogTableProps
                 })}
               </tbody>
             </table>
+            <Pagination
+              page={page}
+              pageCount={pageCount}
+              total={items.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </Card>

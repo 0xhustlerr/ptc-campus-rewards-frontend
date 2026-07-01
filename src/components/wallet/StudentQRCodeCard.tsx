@@ -36,7 +36,7 @@ export function StudentQRCodeCard() {
     <Card title="Campus QR" subtitle="Show this at approved vendors to redeem rewards">
       <div className="flex flex-col items-center gap-4">
         {isReady && !isExpired ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-4">
+          <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-soft ring-4 ring-sky-500/5">
             <QRCode value={qrValue} size={168} level="M" />
           </div>
         ) : (

@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { EarningRuleFormModal } from "@/components/admin/EarningRuleFormModal";
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
 import { EmptyState } from "@/components/shared/FeedbackStates";
+import { Pagination } from "@/components/shared/Pagination";
 import { StatusBadge } from "@/components/shared/StatusBadge";
+
+const PAGE_SIZE = 7;
 import {
   createEarningRule,
   updateEarningRule,
@@ -25,6 +28,13 @@ export function RewardRulesTable({ rules, onMutated }: RewardRulesTableProps) {
   const [editingRule, setEditingRule] = useState<EarningRule | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [busyId, setBusyId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+
+  const pageCount = Math.max(1, Math.ceil(rules.length / PAGE_SIZE));
+  useEffect(() => {
+    setPage((current) => Math.min(current, pageCount));
+  }, [pageCount]);
+  const pagedRules = rules.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   const openCreate = () => {
     setActionError(null);
@@ -101,7 +111,7 @@ export function RewardRulesTable({ rules, onMutated }: RewardRulesTableProps) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {rules.map((rule) => {
+                {pagedRules.map((rule) => {
                   const busy = busyId === rule.id;
                   const dailyLabel =
                     rule.daily_limit != null ? `${rule.daily_limit}/day` : "No limit";
@@ -148,6 +158,13 @@ export function RewardRulesTable({ rules, onMutated }: RewardRulesTableProps) {
                 })}
               </tbody>
             </table>
+            <Pagination
+              page={page}
+              pageCount={pageCount}
+              total={rules.length}
+              pageSize={PAGE_SIZE}
+              onPageChange={setPage}
+            />
           </div>
         )}
       </Card>

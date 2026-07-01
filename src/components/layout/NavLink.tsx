@@ -11,17 +11,20 @@ type NavLinkProps = {
   icon?: ReactNode;
 };
 
-export function NavLink({ href, label, isActive, variant = "pill" }: NavLinkProps) {
+export function NavLink({ href, label, isActive, variant = "pill", icon }: NavLinkProps) {
   if (variant === "tab") {
     return (
       <Link
         href={href}
-        className={`flex shrink-0 flex-col items-center justify-center whitespace-nowrap px-3 py-3 text-xs font-semibold ${
-          isActive ? "text-sky-700" : "text-slate-500"
+        aria-current={isActive ? "page" : undefined}
+        className={`relative flex shrink-0 flex-col items-center justify-center whitespace-nowrap px-3 pb-2 pt-2.5 text-xs font-semibold transition-colors ${
+          isActive ? "text-sky-600" : "text-slate-400 hover:text-slate-600"
         }`}
       >
         <span
-          className={`mb-1 h-1 w-8 rounded-full ${isActive ? "bg-sky-600" : "bg-transparent"}`}
+          className={`mb-1 h-1 w-8 rounded-full transition-all ${
+            isActive ? "bg-gradient-to-r from-sky-500 to-indigo-500" : "bg-transparent"
+          }`}
           aria-hidden
         />
         {label}
@@ -33,10 +36,14 @@ export function NavLink({ href, label, isActive, variant = "pill" }: NavLinkProp
     return (
       <Link
         href={href}
-        className={`block rounded-xl px-3 py-2 text-sm font-semibold transition ${
-          isActive ? "bg-sky-100 text-sky-800" : "text-slate-700 hover:bg-slate-100"
+        aria-current={isActive ? "page" : undefined}
+        className={`flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold transition-all ${
+          isActive
+            ? "bg-sky-50 text-sky-700 shadow-xs ring-1 ring-inset ring-sky-100"
+            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
         }`}
       >
+        {icon}
         {label}
       </Link>
     );
@@ -45,8 +52,11 @@ export function NavLink({ href, label, isActive, variant = "pill" }: NavLinkProp
   return (
     <Link
       href={href}
-      className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-semibold ${
-        isActive ? "bg-sky-600 text-white" : "text-slate-600 hover:bg-slate-100"
+      aria-current={isActive ? "page" : undefined}
+      className={`shrink-0 rounded-lg px-3 py-1.5 text-sm font-semibold transition-all ${
+        isActive
+          ? "bg-gradient-to-b from-sky-500 to-sky-600 text-white shadow-brand"
+          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
       }`}
     >
       {label}

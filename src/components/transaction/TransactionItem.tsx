@@ -9,10 +9,12 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
   const isEarn = transaction.type === "earn";
 
   return (
-    <li className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3">
+    <li className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-white p-3 shadow-xs transition-colors hover:border-slate-300">
       <span
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ${
-          isEarn ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"
+        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold ring-1 ring-inset ${
+          isEarn
+            ? "bg-emerald-50 text-emerald-700 ring-emerald-600/15"
+            : "bg-amber-50 text-amber-700 ring-amber-600/15"
         }`}
         aria-hidden
       >

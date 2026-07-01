@@ -104,10 +104,17 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-md flex-col justify-center p-6">
-      <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-        <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">PTC Campus Rewards</p>
-        <h1 className="mt-2 text-2xl font-bold text-slate-900">Register</h1>
+    <main className="flex min-h-screen w-full flex-col justify-center bg-app-gradient p-6">
+      <div className="mx-auto w-full max-w-md rounded-3xl border border-white/60 bg-white/80 p-6 shadow-lift backdrop-blur-xl sm:p-8 animate-fade-up">
+        <div className="mb-5 flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-500 text-white shadow-brand">
+            <svg viewBox="0 0 20 20" className="h-5 w-5" fill="currentColor" aria-hidden>
+              <path d="M10 2 3 5v5c0 3.9 2.7 7.4 7 8 4.3-.6 7-4.1 7-8V5l-7-3Z" />
+            </svg>
+          </span>
+          <p className="text-sm font-semibold uppercase tracking-wide text-sky-700">PTC Campus Rewards</p>
+        </div>
+        <h1 className="text-2xl font-bold tracking-tight text-slate-900">Create your account</h1>
         <p className="mt-2 text-sm text-slate-600">
           Select your role and credentials. An admin must approve your registration before login.
         </p>
