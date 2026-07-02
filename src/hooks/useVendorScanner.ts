@@ -16,6 +16,9 @@ export function useVendorScanner() {
   const [isRedeeming, setIsRedeeming] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const redeemInFlightRef = useRef(false);
+  // Stable idempotency key per (session, item) so a retry after a lost response
+  // reuses the same key rather than issuing a second redemption request.
+  const redeemKeyRef = useRef<{ signature: string; key: string } | null>(null);
 
   const loadCatalog = useCallback(async () => {
     const items = await getRewardsCatalog();
@@ -75,7 +78,12 @@ export function useVendorScanner() {
     redeemInFlightRef.current = true;
     setIsRedeeming(true);
     setError(null);
-    const idempotencyKey = crypto.randomUUID();
+
+    const signature = `${token}|${rewardItemId}`;
+    if (redeemKeyRef.current?.signature !== signature) {
+      redeemKeyRef.current = { signature, key: crypto.randomUUID() };
+    }
+    const idempotencyKey = redeemKeyRef.current.key;
 
     try {
       const receipt = await redeemReward({
@@ -85,6 +93,7 @@ export function useVendorScanner() {
       });
       const mapped = mapRedemptionReceipt(receipt);
       setWallet((prev) => (prev ? { ...prev, balance: mapped.newBalance } : prev));
+      redeemKeyRef.current = null;
       return { success: true as const, receipt: mapped };
     } catch (err) {
       const message = getUserFacingErrorMessage(err, "Redemption failed.");

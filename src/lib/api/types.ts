@@ -227,6 +227,19 @@ export type EarningRule = {
   updated_at: string;
 };
 
+export type EarningEvent = {
+  id: string;
+  student_id: string;
+  student_name: string | null;
+  rule_id: string;
+  rule_name: string | null;
+  amount: string;
+  notes: string | null;
+  status: string;
+  ledger_transaction_id: string | null;
+  created_at: string;
+};
+
 export type RewardItem = {
   id: string;
   vendor_id: string | null;

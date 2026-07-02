@@ -5,6 +5,7 @@ import type {
   AdminReversalRequest,
   AuditLog,
   CreateAdminRequest,
+  EarningEvent,
   EarningRule,
   EarningRuleCreate,
   EarningRuleUpdate,
@@ -69,6 +70,18 @@ export async function postReversal(body: AdminReversalRequest): Promise<LedgerTr
 
 export async function getPendingRegistrations(): Promise<PendingRegistration[]> {
   return apiGet<PendingRegistration[]>("/admin/users/pending");
+}
+
+export async function getPendingEarningEvents(): Promise<EarningEvent[]> {
+  return apiGet<EarningEvent[]>("/admin/earning-events/pending");
+}
+
+export async function approveEarningEvent(eventId: string): Promise<EarningEvent> {
+  return apiPost<EarningEvent>(`/admin/earning-events/${eventId}/approve`, {});
+}
+
+export async function rejectEarningEvent(eventId: string): Promise<EarningEvent> {
+  return apiPost<EarningEvent>(`/admin/earning-events/${eventId}/reject`, {});
 }
 
 export async function getAdminAccounts(): Promise<AdminAccount[]> {

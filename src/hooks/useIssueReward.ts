@@ -18,6 +18,11 @@ export function useIssueReward() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [recentIssued, setRecentIssued] = useState<IssuedReward[]>([]);
   const inFlightRef = useRef(false);
+  // Keep a stable idempotency key tied to the operation identity so that a
+  // retry after a lost/timed-out response reuses the same key (the backend
+  // dedupes it) instead of double-issuing credits. The key is only rotated
+  // when the operation changes or after a confirmed success.
+  const pendingKeyRef = useRef<{ signature: string; key: string } | null>(null);
 
   const submit = useCallback(async ({ student, rule, note, issuedBy }: IssueRewardParams) => {
     if (inFlightRef.current) {
@@ -26,7 +31,12 @@ export function useIssueReward() {
 
     inFlightRef.current = true;
     setIsSubmitting(true);
-    const idempotencyKey = crypto.randomUUID();
+
+    const signature = `${student.id}|${rule.id}|${note ?? ""}`;
+    if (pendingKeyRef.current?.signature !== signature) {
+      pendingKeyRef.current = { signature, key: crypto.randomUUID() };
+    }
+    const idempotencyKey = pendingKeyRef.current.key;
 
     try {
       const response = await issueReward({
@@ -38,6 +48,9 @@ export function useIssueReward() {
 
       const issued = mapIssueToIssuedReward(response, student, rule, note, issuedBy);
       setRecentIssued((prev) => [issued, ...prev].slice(0, 20));
+      // Success confirmed — the next issue (even with identical params) is a
+      // new operation and must use a fresh key.
+      pendingKeyRef.current = null;
 
       return {
         success: true as const,
