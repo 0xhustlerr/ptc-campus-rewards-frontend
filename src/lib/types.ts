@@ -98,6 +98,9 @@ export type ScannedWallet = {
   balance: number;
   status: WalletStatus;
   expiresInSeconds?: number;
+  /** Absolute session expiry (epoch ms) for live countdown, unlike the
+   * snapshot expiresInSeconds captured at scan time. */
+  expiresAt?: number;
   qrSessionToken?: string;
 };
 

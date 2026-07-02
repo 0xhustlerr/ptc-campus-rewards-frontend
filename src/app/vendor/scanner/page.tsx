@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/shared/Button";
 import { Card } from "@/components/shared/Card";
@@ -46,15 +46,29 @@ export default function VendorScannerPage() {
     if (firstAvailable) setSelectedItemId(firstAvailable.id);
   };
 
+  // Live clock so the QR-session expiry is re-evaluated every second while the
+  // wallet/confirm modal is open, rather than frozen at scan time.
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!wallet?.expiresAt) return;
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [wallet?.expiresAt]);
+
   const selectedItem = catalog.find((i) => i.id === selectedItemId) ?? null;
   const qrToken = wallet?.qrSessionToken ?? "";
+  const remainingSeconds =
+    wallet?.expiresAt !== undefined
+      ? Math.max(0, Math.floor((wallet.expiresAt - now) / 1000))
+      : wallet?.expiresInSeconds;
   const sessionExpired =
-    wallet != null &&
-    (wallet.expiresInSeconds === undefined || wallet.expiresInSeconds <= 0);
+    wallet != null && (remainingSeconds === undefined || remainingSeconds <= 0);
   const canRedeem = Boolean(wallet?.sessionValid && !sessionExpired && qrToken);
 
   const handleConfirm = async () => {
     if (!wallet || !selectedItem || !qrToken || !canRedeem) {
+      setModalOpen(false);
       setFailure("QR session expired — ask the student to refresh their QR.");
       return;
     }
@@ -142,6 +156,7 @@ export default function VendorScannerPage() {
             onConfirm={handleConfirm}
             onCancel={() => setModalOpen(false)}
             isProcessing={isRedeeming}
+            remainingSeconds={remainingSeconds}
           />
         )}
       </div>

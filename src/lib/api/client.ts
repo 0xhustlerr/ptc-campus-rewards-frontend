@@ -3,11 +3,21 @@
  * Attaches Bearer token, handles 401 refresh, returns typed JSON.
  */
 
-import { clearTokens, getAccessToken, getRefreshToken, setTokens } from "@/lib/api/auth-storage";
+import {
+  clearTokens,
+  getAccessExpiresAt,
+  getAccessToken,
+  getRefreshToken,
+  setTokens,
+} from "@/lib/api/auth-storage";
 import { ApiError, parseErrorResponse } from "@/lib/api/errors";
 import type { TokenResponse } from "@/lib/api/types";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
+
+/** Refresh proactively when the access token is within this window of expiry,
+ * avoiding a guaranteed 401 round-trip and shrinking the unauthenticated gap. */
+const PROACTIVE_REFRESH_MS = 30_000;
 
 export function getApiBaseUrl(): string {
   return API_BASE_URL;
@@ -73,6 +83,14 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     headers.set("Content-Type", "application/json");
   }
   if (!skipAuth) {
+    // Refresh ahead of expiry so we send a fresh token instead of relying on a
+    // reactive 401 → refresh → retry cycle.
+    if (!skipRefresh && getAccessToken() && getRefreshToken()) {
+      const expiresAt = getAccessExpiresAt();
+      if (expiresAt !== null && expiresAt - Date.now() <= PROACTIVE_REFRESH_MS) {
+        await scheduleRefresh(refreshAccessToken);
+      }
+    }
     const token = getAccessToken();
     if (token) headers.set("Authorization", `Bearer ${token}`);
   }

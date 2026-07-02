@@ -12,6 +12,8 @@ type RedemptionConfirmModalProps = {
   onConfirm: () => void;
   onCancel: () => void;
   isProcessing?: boolean;
+  /** Live seconds remaining on the QR session; when <= 0 confirmation is blocked. */
+  remainingSeconds?: number;
 };
 
 export function RedemptionConfirmModal({
@@ -21,11 +23,14 @@ export function RedemptionConfirmModal({
   onConfirm,
   onCancel,
   isProcessing,
+  remainingSeconds,
 }: RedemptionConfirmModalProps) {
   if (!open || !item) return null;
 
   const newBalance = wallet.balance - item.creditsCost;
   const insufficient = newBalance < 0;
+  const displaySeconds = remainingSeconds ?? wallet.expiresInSeconds;
+  const expired = displaySeconds !== undefined && displaySeconds <= 0;
 
   return (
     <div
@@ -60,9 +65,11 @@ export function RedemptionConfirmModal({
           ]}
         />
 
-        {wallet.expiresInSeconds !== undefined && (
-          <p className="mt-3 text-xs text-amber-700">
-            QR session expires in {wallet.expiresInSeconds}s — confirm while valid.
+        {displaySeconds !== undefined && (
+          <p className={`mt-3 text-xs ${expired ? "text-red-700" : "text-amber-700"}`}>
+            {expired
+              ? "QR session expired — ask the student to refresh their QR."
+              : `QR session expires in ${displaySeconds}s — confirm while valid.`}
           </p>
         )}
 
@@ -73,7 +80,7 @@ export function RedemptionConfirmModal({
           <Button
             type="button"
             onClick={onConfirm}
-            disabled={insufficient || isProcessing}
+            disabled={insufficient || isProcessing || expired}
             className="flex-1"
           >
             {isProcessing ? "Processing…" : "Confirm deduction"}

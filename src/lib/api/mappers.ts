@@ -193,6 +193,7 @@ export function mapVendorScan(scan: VendorScanResponse, qrToken: string): Scanne
     balance: toNumber(scan.balance),
     status: mapWalletStatus(scan.wallet_status ?? "active"),
     expiresInSeconds,
+    expiresAt,
     qrSessionToken: qrToken,
   };
 }

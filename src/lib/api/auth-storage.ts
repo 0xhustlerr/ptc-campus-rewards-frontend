@@ -22,6 +22,14 @@ export function getRefreshToken(): string | null {
   return window.localStorage.getItem(REFRESH_TOKEN_KEY);
 }
 
+export function getAccessExpiresAt(): number | null {
+  if (!isBrowser()) return null;
+  const raw = window.localStorage.getItem(ACCESS_EXPIRES_KEY);
+  if (!raw) return null;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
 export function setTokens(accessToken: string, refreshToken: string, expiresInSeconds: number): void {
   if (!isBrowser()) return;
   const expiresAt = Date.now() + expiresInSeconds * 1000;
